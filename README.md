@@ -13,9 +13,6 @@ Example
 $ python
 >>> import ble
 >>> dev = ble.discover_device(lambda d: ble.uuids.heart_rate in d.uuids)
->>> dev.connect()
->>> dev.battery_service.battery_level.value
-[100]
 >>> dev.heart_rate_service.heart_rate_measurement.notifying=True
 >>> print dev.heart_rate_service.heart_rate_measurement.value
 {'hr': 97}
@@ -24,47 +21,32 @@ $ python
 Backends
 --------
 
-There are two interfaces to bluez that can be used. They are selected
-by editing the "ble.py" file.
+The backend for ble is based on dbus.  It's  shiny-new and crashes
+occasionally. Recent versions of bluez contain "GattService1"
+interfaces on the d-bus. So Python can directly control bluetooth
+without any shims or helper applications.
 
-1. bluepy
+To use this backend, download and compile bluez from the git repository.
+Then run bluetoothd with the experimental flag and plugins disabled.
 
-   https://github.com/IanHarvey/bluepy
+Ubuntu uses an ancient version of bluez, so I just build a git
+pull.
 
-   bluepy uses the hci socket interface to bluez. This works well but
-   it is deprecated and requires root access. bluepy uses a compiled
-   helper application for this. To run bluepy as a non-root user, you
-   can set that binary to be suid-root. I've included the script
-   `setup_helper.sh` to accomplish this. *Note that this is bad
-   security practice. Don't make an installer that does this.*
+For Ubuntu 14.04, something like this works:
 
-2. dbus
+```
+$ git clone https://git.kernel.org/pub/scm/bluetooth/bluez.git
+$ cd bluez
+$ ./bootstrap
+$ ./configure --disable-systemd --enable-experimental
+$ make
+$ sudo -s  # "sudo service bluetooth stop" doesn't work
+# service bluetooth stop 
+# src/bluetoothd -p x -n -E # no plugins, no detach, experimental enabled
+```
 
-   The other backend is shiny-new and crashes occasionally. Recent
-   versions of bluez contain "GattService1" interfaces on the
-   d-bus. So Python can directly control bluetooth without any shims
-   or helper applications. To use this backend, download and compile
-   bluez from the git repository. Then run bluetoothd with the
-   experimental flag and plugins disabled.
-
-   My Ubuntu uses an ancient version of bluez, so I just build a git
-   pull.
-
-   For Ubuntu 14.04, something like this works:
-
-   ```
-   $ git clone https://git.kernel.org/pub/scm/bluetooth/bluez.git
-   $ cd bluez
-   $ ./bootstrap
-   $ ./configure --disable-systemd --enable-experimental
-   $ make
-   $ sudo -s  # "sudo service bluetooth stop" doesn't work
-   # service bluetooth stop 
-   # src/bluetoothd -p x -n -E # no plugins, no detach, experimental enabled
-   ```
-
-   Enable the dbus backend by editing `ble.py`. Maybe this will be
-   runtime configurable in the future.
+The latest Arch Linux versions include an up to date version of Bluez and
+therefore no source installation is required.
 
 API
 ---
