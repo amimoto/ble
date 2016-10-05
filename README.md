@@ -6,6 +6,19 @@ Pythonic interface to Bluetooth Low Energy on Linux+bluez.
 I was not content with the API offered by the existing projects, so I
 added this layer on top.
 
+Installation
+------------
+
+You can install the code by cloning this repository and running the following
+command (we suggest you do this from within a virtual environment!)
+
+```python setup.py install```
+
+To create a pip package, run `python setup.py sdist` and then run pip to
+install the newly created tarball:
+
+```pip install dist/ble-0.0.1.tar.gz```
+
 Example
 -------
 
