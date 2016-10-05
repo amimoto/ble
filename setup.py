@@ -14,6 +14,7 @@ setup(
   author='Mark Rages',
   author_email='markrages@gmail.com',
   packages=['ble'],
+  package_data={'ble':['uuids.json']},
   license=['LICENSE.txt'],
   description=['Python interface to Bluetooth Low Energy devices with BlueZ.'],
   install_requires=reqs,
