@@ -1,11 +1,8 @@
 #!/usr/bin/python
 
-if 1:
-    from ble_bluepy import *
-else:
-    from ble_dbus import *
+from ble_dbus import *
 
-try:    
+try:
     uuid_registry.load_classes()
 except AttributeError:
     """We have mutually recursive module loading between ble_*.py and
